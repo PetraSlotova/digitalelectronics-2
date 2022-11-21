@@ -1,4 +1,4 @@
-# Lab 8: Petra Slotová
+gi# Lab 8: Petra Slotová
 
 ### Instruction set
 
@@ -6,7 +6,7 @@
 
    | **Instruction** | **Binary opcode** | **Hex opcode** | **Compiler Hex opcode** |
    | :-- | :-: | :-- | :-: |
-   | `add r24, r0` | `0000_1101_1000_0000` | 0b80 | 800d |
+   | `add r24, r0` | `0000_1101_1000_0000` | 0d80 | 800d |
    | `com r26` | `1001_0101_0001_1010` | 951a | 1a95 |
    | `eor r26, r27` | `0010_0111_0110_0100` | 2764 | 6427 |
    | `mul r22, r20` | `1001_1111_0110_0100` | 9f64 | 649f |
