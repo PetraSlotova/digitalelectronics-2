@@ -7,8 +7,8 @@ gi# Lab 8: Petra Slotová
    | **Instruction** | **Binary opcode** | **Hex opcode** | **Compiler Hex opcode** |
    | :-- | :-: | :-- | :-: |
    | `add r24, r0` | `0000_1101_1000_0000` | 0d80 | 800d |
-   | `com r26` | `1001_0101_0001_1010` | 951a | 1a95 |
-   | `eor r26, r27` | `0010_0111_0110_0100` | 2764 | 6427 |
+   | `com r26` | `1001_0101_1010_0000` | 95a0 | a095 |
+   | `eor r26, r27` | `0010_0111_1010_1011` | 27ab | ab27 |
    | `mul r22, r20` | `1001_1111_0110_0100` | 9f64 | 649f |
    | `ret` | `1001_0101_0000_1000` | 9508 | 0895 |
 
@@ -26,4 +26,4 @@ gi# Lab 8: Petra Slotová
 
 3. Draw a flowchart of function `void burst_c(uint8_t number)` which generates a variable number of short pulses at output pin. Let the pulse width be the shortest one. The image can be drawn on a computer or by hand. Use clear descriptions of the individual steps of the algorithms.
 
-   ![your figure]()
+   ![Flowchart](images/pulses.png)
