@@ -24,6 +24,10 @@
  *     A+K  - Back-light enabled/disabled by PB2
  * 
  **********************************************************************/
+/* Define pins -------------------------------------------------------*/
+#define Rx PC0 
+#define Ry PC1 
+#define SW PD2 
 
 /* Includes ----------------------------------------------------------*/
 #include <avr/io.h>         // AVR device-specific IO definitions
@@ -33,6 +37,11 @@
 #include <lcd.h>            // Peter Fleury's LCD library
 #include <stdlib.h>         // C library. Needed for number conversions
 
+/* Arduino world -----------------------------------------------------*/
+#include "Arduino.h"
+#define PC0 A0
+#define PC1 A1
+#define PD2 2
 
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
@@ -42,63 +51,35 @@
  * Returns:  none
  **********************************************************************/
 
-// Rotary Encoder Inputs
-#define CLK 2
-#define DT 3
-#define SW 4
-
-int counter = 0;
-int currentStateCLK;
-int lastStateCLK;
-String currentDir ="";
-unsigned long lastButtonPress = 0;
-
-
 int main(void)
 {
-    uint8_t customChar[16] = {
-        0b00111,
-        0b01110,
-        0b11100,
-        0b11000,
-        0b11100,
-        0b01110,
-        0b00111,
-        0b00011,
-        //Second charakter
-        0b00111,
-        0b01110,
-        0b11100,
-        0b11000,
-        0b11100,
-        0b01110,
-        0b00111,
-        0b00011
-    };
-
-    // Initialize display
+    /* -------------------------Initialize display -----------------------------*/
     lcd_init(LCD_DISP_ON_CURSOR);
-
-    lcd_command(1<<LCD_CGRAM);       // Set addressing to CGRAM (Character Generator RAM)
-                                     // ie to individual lines of character patterns
-    for (uint8_t i = 0; i < 16; i++)  // Copy new character patterns line by line to CGRAM
-        lcd_data(customChar[i]);
-    lcd_command(1<<LCD_DDRAM);       // Set addressing back to DDRAM (Display Data RAM)
-                                     // ie to character codes
-    lcd_gotoxy(13,1);
-    // Display symbol with Character code 0
-    //lcd_putc(0x00);
-    //lcd_putc(0x01);
-
-
     // Put string(s) on LCD screen
     lcd_gotoxy(5, 0);
     lcd_putc('a');
 
+    
+    /* -----------------------------Joystick -----------------------------------*/
+    // Configure Analog-to-Digital Convertion unit
+    // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
+    ADMUX = ADMUX |  (1<<REFS0);
+    // Select input channel ADC0 (voltage divider pin)
+    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1 | 1<<MUX0);
+    // Enable ADC module
+    ADCSRA |= (1<<ADEN); // into the variable ADCSRA counting a new value
+    // Enable conversion complete interrupt
+    ADCSRA |= (1<<ADIE);
+    // Set clock prescaler to 128
+    ADCSRA |= (1<<ADPS2) | (1<<ADPS1) | (1<<ADPS0);
 
+    // Configure 16-bit Timer/Counter1 to start ADC conversion
+    // Set prescaler to 33 ms and enable overflow interrupt
+    TIM1_overflow_33ms();
+    TIM1_overflow_interrupt_enable();
 
-    // Configuration of 8-bit Timer/Counter2 for Stopwatch update
-    // Set the overflow prescaler to 16 ms and enable interrupt
+    // Enables interrupts by setting the global interrupt mask
+    sei();
 
     // Infinite loop
     while (1)
@@ -110,58 +91,73 @@ int main(void)
     // Will never reach this
     return 0;
 
-    // Set encoder pins as inputs
-	pinMode(CLK,PB4);
-	pinMode(DT,PB3);
-	pinMode(SW, PB2);
+}
 
+/* Interrupt service routines ----------------------------------------*/
+/**********************************************************************
+ * Function: Timer/Counter1 overflow interrupt
+ * Purpose:  Use single conversion mode and start conversion every 100 ms.
+ **********************************************************************/
+ISR(TIMER1_OVF_vect)
+{
+    // Start ADC conversion
+    ADCSRA |= (1<<ADSC);
+}
 
-	// Read the initial state of CLK
-	lastStateCLK = digitalRead(CLK);
-    // Read the current state of CLK
-	currentStateCLK = digitalRead(CLK);
+/**********************************************************************
+ * Function: ADC complete interrupt
+ * Purpose:  Display converted value on LCD screen.
+ **********************************************************************/
+ISR(ADC_vect)
+{
+    uint16_t value;
+    char string[4];  // String for converted numbers by itoa()
 
-	// If last and current state of CLK are different, then pulse occurred
-	// React to only 1 state change to avoid double count
-	if (currentStateCLK != lastStateCLK  && currentStateCLK == 1){
+    // Read converted value
+    // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
+    value = ADC;
+    // Convert "value" to "string" and display it
+    itoa(value, string, 10);
+    lcd_gotoxy(8, 0);
+    lcd_puts("    ");
+    lcd_gotoxy(8, 0);
+    lcd_puts(string);
 
-		// If the DT state is different than the CLK state then
-		// the encoder is rotating CCW so decrement
-		if (digitalRead(DT) != currentStateCLK) {
-			counter --;
-			currentDir ="CCW";
-		} else {
-			// Encoder is rotating CW so increment
-			counter ++;
-			currentDir ="CW";
-		}
-
-    lcd_puts("Direction: ");
-    lcd_puts(currentDir);
-    lcd_puts(" | Counter: ");
-    lcd_puts(currentDir);
-
-
-    // Remember last CLK state
-	lastStateCLK = currentStateCLK;
-
-	// Read the button state
-	int btnState = digitalRead(SW);
-
-	//If we detect LOW signal, button is pressed
-	if (btnState == LOW) {
-		//if 50ms have passed since last LOW pulse, it means that the
-		//button has been pressed, released and pressed again
-		if (millis() - lastButtonPress > 50) {
-			lcd_puts("Button pressed! ");
-		}
-
-		// Remember last button press event
-		lastButtonPress = millis();
-	}
-
-	// Put in a slight delay to help debounce the reading
-	delay(1);
-	}
-
+    switch(value)
+    {
+        case 0:
+        {
+            lcd_gotoxy(8, 1);
+            lcd_puts("      ");
+            lcd_gotoxy(8, 1);
+            lcd_puts("none");
+        }
+        break;
+        case 50 ... 150:
+        {
+            lcd_gotoxy(8, 1);
+            lcd_puts("      ");
+            lcd_gotoxy(8, 1);
+            lcd_puts("select");
+        }
+        break;
+        case 151 ... 250:
+        {
+            lcd_gotoxy(8, 1);
+            lcd_puts("      ");
+            lcd_gotoxy(8, 1);
+            lcd_puts("right");
+        }
+        break;
+        case 251 ... 500:
+        {
+            lcd_gotoxy(8, 1);
+            lcd_puts("      ");
+            lcd_gotoxy(8, 1);
+            lcd_puts("left");
+        }
+        break;
+        default:
+        break;
+    }
 }
