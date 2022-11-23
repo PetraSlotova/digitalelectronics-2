@@ -56,16 +56,16 @@ int main(void)
     /* -------------------------Initialize display -----------------------------*/
     lcd_init(LCD_DISP_ON_CURSOR);
     // Put string(s) on LCD screen
-    lcd_gotoxy(5, 0);
-    lcd_putc('a');
+    //lcd_gotoxy(5, 0);
+    //lcd_putc('a');
 
     
     /* -----------------------------Joystick -----------------------------------*/
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
     ADMUX = ADMUX |  (1<<REFS0);
-    // Select input channel ADC0 (voltage divider pin)
-    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1 | 1<<MUX0);
+    // Select input channel ADC1 (voltage divider pin) - x axis
+    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0) ;
     // Enable ADC module
     ADCSRA |= (1<<ADEN); // into the variable ADCSRA counting a new value
     // Enable conversion complete interrupt
@@ -75,7 +75,7 @@ int main(void)
 
     // Configure 16-bit Timer/Counter1 to start ADC conversion
     // Set prescaler to 33 ms and enable overflow interrupt
-    TIM1_overflow_33ms();
+    TIM1_overflow_4s();
     TIM1_overflow_interrupt_enable();
 
     // Enables interrupts by setting the global interrupt mask
@@ -110,54 +110,74 @@ ISR(TIMER1_OVF_vect)
  **********************************************************************/
 ISR(ADC_vect)
 {
-    uint16_t value;
+    uint16_t x, y;
     char string[4];  // String for converted numbers by itoa()
 
-    // Read converted value
+    // Read x value ----------------------------------------------------------
     // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
-    value = ADC;
+    // Select input channel ADC1 (voltage divider pin)
+    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0) ;
+    x = ADC;
+
+    if ((x<411)|(x>611))
+    {
     // Convert "value" to "string" and display it
-    itoa(value, string, 10);
-    lcd_gotoxy(8, 0);
-    lcd_puts("    ");
-    lcd_gotoxy(8, 0);
+    itoa(x, string, 10);
+    lcd_gotoxy(0, 0);
+    lcd_puts("     ");
+    lcd_gotoxy(0, 0);
     lcd_puts(string);
 
-    switch(value)
+    if(x<411)
     {
-        case 0:
-        {
-            lcd_gotoxy(8, 1);
-            lcd_puts("      ");
-            lcd_gotoxy(8, 1);
-            lcd_puts("none");
-        }
-        break;
-        case 50 ... 150:
-        {
-            lcd_gotoxy(8, 1);
-            lcd_puts("      ");
-            lcd_gotoxy(8, 1);
-            lcd_puts("select");
-        }
-        break;
-        case 151 ... 250:
-        {
-            lcd_gotoxy(8, 1);
-            lcd_puts("      ");
-            lcd_gotoxy(8, 1);
-            lcd_puts("right");
-        }
-        break;
-        case 251 ... 500:
-        {
-            lcd_gotoxy(8, 1);
-            lcd_puts("      ");
-            lcd_gotoxy(8, 1);
-            lcd_puts("left");
-        }
-        break;
-        default:
-        break;
+        lcd_gotoxy(0, 1);
+        lcd_puts("     ");
+        lcd_gotoxy(0, 1);
+        lcd_puts("left");
+    }
+    else if(x>611)
+    {
+        lcd_gotoxy(0, 1);
+        lcd_puts("     ");
+        lcd_gotoxy(0, 1);
+        lcd_puts("right");
+    }
+    }
+
+    // Read y value ----------------------------------------------------------
+    // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
+    else if(412<x<610)
+    {
+    lcd_gotoxy(8, 0);
+    lcd_puts("A");
+    // Select input channel ADC0 (voltage divider pin)
+    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0) ;
+    // Enable ADC module
+    ADCSRA |= (1<<ADEN); // into the variable ADCSRA counting a new value
+    // Enable conversion complete interrupt
+    ADCSRA |= (1<<ADIE);
+    ADCSRA |= (1<<ADSC);
+    y = ADC;
+    // Convert "value" to "string" and display it
+    itoa(y, string, 10);
+    lcd_gotoxy(0, 0);
+    lcd_puts("     ");
+    lcd_gotoxy(0, 0);
+    lcd_puts(string);
+
+    if(y<411)
+    {
+        lcd_gotoxy(0, 1);
+        lcd_puts("     ");
+        lcd_gotoxy(0, 1);
+        lcd_puts("up");
+    }
+    else if(y>611)
+    {
+        lcd_gotoxy(0, 1);
+        lcd_puts("     ");
+        lcd_gotoxy(0, 1);
+        lcd_puts("down");
+    }
     }
 }
