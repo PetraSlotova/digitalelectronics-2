@@ -64,8 +64,6 @@ int main(void)
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
     ADMUX = ADMUX |  (1<<REFS0);
-    // Select input channel ADC1 (voltage divider pin) - x axis
-    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0) ;
     // Enable ADC module
     ADCSRA |= (1<<ADEN); // into the variable ADCSRA counting a new value
     // Enable conversion complete interrupt
@@ -75,7 +73,7 @@ int main(void)
 
     // Configure 16-bit Timer/Counter1 to start ADC conversion
     // Set prescaler to 33 ms and enable overflow interrupt
-    TIM1_overflow_4s();
+    TIM1_overflow_33ms();
     TIM1_overflow_interrupt_enable();
 
     // Enables interrupts by setting the global interrupt mask
@@ -116,68 +114,63 @@ ISR(ADC_vect)
     // Read x value ----------------------------------------------------------
     // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
     // Select input channel ADC1 (voltage divider pin)
-    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0) ;
+    uint8_t channel = ADMUX & 0b00001111;
+    if (channel == 0)
+    {
     x = ADC;
-
+        itoa(x, string, 10);
+        lcd_gotoxy(8, 0);
+        lcd_puts("     ");
+        lcd_gotoxy(8, 0);
+        lcd_puts(string);
     if ((x<411)|(x>611))
     {
-    // Convert "value" to "string" and display it
-    itoa(x, string, 10);
-    lcd_gotoxy(0, 0);
-    lcd_puts("     ");
-    lcd_gotoxy(0, 0);
-    lcd_puts(string);
+        // Convert "value" to "string" and display it
 
-    if(x<411)
-    {
-        lcd_gotoxy(0, 1);
-        lcd_puts("     ");
-        lcd_gotoxy(0, 1);
-        lcd_puts("left");
+        if(x<411)
+        {
+            lcd_gotoxy(8, 1);
+            lcd_puts("     ");
+            lcd_gotoxy(8, 1);
+            lcd_puts("up");
+        }
+        else if(x>611)
+        {
+            lcd_gotoxy(8, 1);
+            lcd_puts("     ");
+            lcd_gotoxy(8, 1);
+            lcd_puts("down");
+        }
     }
-    else if(x>611)
-    {
-        lcd_gotoxy(0, 1);
-        lcd_puts("     ");
-        lcd_gotoxy(0, 1);
-        lcd_puts("right");
-    }
-    }
-
-    // Read y value ----------------------------------------------------------
-    // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
-    else if(412<x<610)
-    {
-    lcd_gotoxy(8, 0);
-    lcd_puts("A");
-    // Select input channel ADC0 (voltage divider pin)
     ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0) ;
-    // Enable ADC module
-    ADCSRA |= (1<<ADEN); // into the variable ADCSRA counting a new value
-    // Enable conversion complete interrupt
-    ADCSRA |= (1<<ADIE);
-    ADCSRA |= (1<<ADSC);
-    y = ADC;
-    // Convert "value" to "string" and display it
-    itoa(y, string, 10);
-    lcd_gotoxy(0, 0);
-    lcd_puts("     ");
-    lcd_gotoxy(0, 0);
-    lcd_puts(string);
+    }
 
-    if(y<411)
+    else if (channel == 1)
     {
-        lcd_gotoxy(0, 1);
+        // Read y value ----------------------------------------------------------
+        // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
+        y = ADC;
+        // Convert "value" to "string" and display it
+        itoa(y, string, 10);
+        lcd_gotoxy(0, 0);
         lcd_puts("     ");
-        lcd_gotoxy(0, 1);
-        lcd_puts("up");
-    }
-    else if(y>611)
-    {
-        lcd_gotoxy(0, 1);
-        lcd_puts("     ");
-        lcd_gotoxy(0, 1);
-        lcd_puts("down");
-    }
-    }
+        lcd_gotoxy(0, 0);
+        lcd_puts(string);
+
+        if(y<411)
+        {
+            lcd_gotoxy(0, 1);
+            lcd_puts("     ");
+            lcd_gotoxy(0, 1);
+            lcd_puts("left");
+        }
+        else if(y>611)
+        {
+            lcd_gotoxy(0, 1);
+            lcd_puts("     ");
+            lcd_gotoxy(0, 1);
+            lcd_puts("right");
+        }
+        ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1 | 1<<MUX0);
+        }
 }
