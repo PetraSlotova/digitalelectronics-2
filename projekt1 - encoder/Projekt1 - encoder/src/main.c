@@ -43,9 +43,6 @@
 #define PC1 A1
 #define PD2 2
 
-/*--------------------Define position of charakter--------------------*/
-uint16_t h = 0, v = 0;
-
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
  * Function: Main function where the program execution begins
@@ -53,7 +50,7 @@ uint16_t h = 0, v = 0;
  *           Timer/Counter2 overflows.
  * Returns:  none
  **********************************************************************/
-
+uint16_t h = 0, v = 0;
 int main(void)
 {
     /* -------------------------Initialize display -----------------------------*/
