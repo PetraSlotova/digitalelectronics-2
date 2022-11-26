@@ -24,10 +24,15 @@
  *     A+K  - Back-light enabled/disabled by PB2
  * 
  **********************************************************************/
-/* Define pins -------------------------------------------------------*/
+/* Define pins for joystick ------------------------------------------*/
 #define Rx PC0 
 #define Ry PC1 
 #define SW PD2 
+
+/* Define pins for rotary ---------------------------------------------*/
+#define CLK PB3
+#define DT PB4 
+#define SW PB5 
 
 /* Includes ----------------------------------------------------------*/
 #include <avr/io.h>         // AVR device-specific IO definitions
@@ -42,6 +47,9 @@
 #define PC0 A0
 #define PC1 A1
 #define PD2 2
+#define PB3 11
+#define PB4 12
+#define PB5 13
 
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
@@ -50,7 +58,10 @@
  *           Timer/Counter2 overflows.
  * Returns:  none
  **********************************************************************/
-uint16_t h = 0, v = 0;
+// Define global variables for charakters and directions
+uint16_t h = 0, v = 0; 
+uint16_t ch = 0; 
+
 int main(void)
 {
     /* -------------------------Initialize display -----------------------------*/
@@ -71,6 +82,10 @@ int main(void)
     // Set prescaler to 33 ms and enable overflow interrupt
     TIM1_overflow_33ms();
     TIM1_overflow_interrupt_enable();
+    
+    PCICR |= (1<<PCIE0);
+    PCMSK0 |= (1<<PCINT3);
+    PCMSK0 |= (1<<PCINT4);
 
     // Enables interrupts by setting the global interrupt mask
     sei();
@@ -96,6 +111,23 @@ ISR(TIMER1_OVF_vect)
 {
     // Start ADC conversion
     ADCSRA |= (1<<ADSC);
+    char string[4];
+    int b = GPIO_read(&PINB, PB3);
+    lcd_gotoxy(8, 0);
+    itoa(b, string, 10);
+    lcd_puts(string);
+}
+
+ISR(PCINT0_vect)
+{
+    char string[4];  // String for converted numbers by itoa()
+    int a = digitalRead(11);
+    lcd_gotoxy(8, 0);
+    itoa(a, string, 10);
+    lcd_puts(string);
+    lcd_gotoxy(8, 1);
+    lcd_puts("X");
+
 }
 
 /**********************************************************************
@@ -114,11 +146,7 @@ ISR(ADC_vect)
     if (channel == 0)
     {
     x = ADC;
-        /*itoa(x, string, 10);
-        lcd_gotoxy(8, 0);
-        lcd_puts("     ");
-        lcd_gotoxy(8, 0);
-        lcd_puts(string);*/
+
     if ((x<411)|(x>611))
     {
         // Convert "value" to "string" and display it
@@ -131,7 +159,8 @@ ISR(ADC_vect)
                 v--;
             }
             lcd_gotoxy(h, v);
-            lcd_puts("A");
+            itoa(ch, string, 10);
+            lcd_puts(string);
         }
         else if(x>611)
         {
@@ -141,7 +170,8 @@ ISR(ADC_vect)
                 v++;
             }
             lcd_gotoxy(h, v);
-            lcd_puts("A");
+            itoa(ch, string, 10);
+            lcd_puts(string);
         }
     }
     ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0) ;
@@ -152,12 +182,6 @@ ISR(ADC_vect)
         // Read y value ----------------------------------------------------------
         // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
         y = ADC;
-        // Convert "value" to "string" and display it
-        /*itoa(y, string, 10);
-        lcd_gotoxy(0, 0);
-        lcd_puts("     ");
-        lcd_gotoxy(0, 0);
-        lcd_puts(string);*/
 
         if(y<411)
         {
@@ -167,7 +191,8 @@ ISR(ADC_vect)
                 h--;
             }
             lcd_gotoxy(h, v);
-            lcd_puts("A");
+            itoa(ch, string, 10);
+            lcd_puts(string);
         }
         else if(y>611)
         {
@@ -177,7 +202,8 @@ ISR(ADC_vect)
                 h++;
             }
             lcd_gotoxy(h, v);
-            lcd_puts("A");
+            itoa(ch, string, 10);
+            lcd_puts(string);
         }
         ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1 | 1<<MUX0);
         }
