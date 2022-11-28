@@ -111,23 +111,28 @@ ISR(TIMER1_OVF_vect)
 {
     // Start ADC conversion
     ADCSRA |= (1<<ADSC);
-    char string[4];
-    int b = GPIO_read(&PINB, PB3);
-    lcd_gotoxy(8, 0);
-    itoa(b, string, 10);
-    lcd_puts(string);
 }
 
 ISR(PCINT0_vect)
 {
     char string[4];  // String for converted numbers by itoa()
-    int a = digitalRead(11);
-    lcd_gotoxy(8, 0);
-    itoa(a, string, 10);
-    lcd_puts(string);
-    lcd_gotoxy(8, 1);
-    lcd_puts("X");
 
+    int direction = digitalRead(12);
+    if (direction == 1)
+    {
+        ch++;
+        lcd_gotoxy(h, v);
+        itoa(ch, string, 10);
+        lcd_puts(string);
+    }
+
+    else if (direction == 0)
+    {
+        ch--;
+        lcd_gotoxy(h, v);
+        itoa(ch, string, 10);
+        lcd_puts(string);
+    }
 }
 
 /**********************************************************************
