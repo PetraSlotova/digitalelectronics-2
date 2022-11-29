@@ -24,6 +24,7 @@
  *     A+K  - Back-light enabled/disabled by PB2
  * 
  **********************************************************************/
+
 /* Define pins for joystick ------------------------------------------*/
 #define Rx PC0 
 #define Ry PC1 
@@ -34,9 +35,12 @@
 #define DT PB4 
 #define SW PB5 
 
+#define SHORT_DELAY 5 // Delay in milliseconds
+
 /* Includes ----------------------------------------------------------*/
 #include <avr/io.h>         // AVR device-specific IO definitions
 #include <avr/interrupt.h>  // Interrupts standard C library for AVR-GCC
+#include <util/delay.h>     // Functions for busy-wait delay loops
 #include <gpio.h>           // GPIO library for AVR-GCC
 #include "timer.h"          // Timer library for AVR-GCC
 #include <lcd.h>            // Peter Fleury's LCD library
@@ -60,7 +64,7 @@
  **********************************************************************/
 // Define global variables for charakters and directions
 uint16_t h = 0, v = 0; 
-uint16_t ch = 0; 
+uint16_t ch = 1; 
 
 int main(void)
 {
@@ -86,6 +90,9 @@ int main(void)
     PCICR |= (1<<PCIE0);
     PCMSK0 |= (1<<PCINT3);
     PCMSK0 |= (1<<PCINT4);
+
+    EIMSK |= (1 << INT0);
+    GPIO_mode_input_pullup(&DDRD, PD2);
 
     // Enables interrupts by setting the global interrupt mask
     sei();
@@ -116,23 +123,30 @@ ISR(TIMER1_OVF_vect)
 ISR(PCINT0_vect)
 {
     char string[4];  // String for converted numbers by itoa()
-
-    int direction = digitalRead(12);
-    if (direction == 1)
+    _delay_ms(SHORT_DELAY);
+    if (ch < 9)
     {
         ch++;
         lcd_gotoxy(h, v);
         itoa(ch, string, 10);
         lcd_puts(string);
     }
+    //int clk = GPIO_read(&PINB, 3);
+    //int direction = GPIO_read(&PINB, 4);
+}  
 
-    else if (direction == 0)
+ISR(INT0_vect)
+{
+    char string[4];  // String for converted numbers by itoa()
+    uint8_t sw = digitalRead(2);
+    if (sw == LOW)
     {
-        ch--;
+        ch = 1;
         lcd_gotoxy(h, v);
         itoa(ch, string, 10);
         lcd_puts(string);
     }
+    
 }
 
 /**********************************************************************
@@ -192,8 +206,8 @@ ISR(ADC_vect)
         {
             lcd_gotoxy(h, v);
             lcd_puts(" ");
-            if (h > 0){
-                h--;
+            if (h < 15){
+                h++;
             }
             lcd_gotoxy(h, v);
             itoa(ch, string, 10);
@@ -203,8 +217,8 @@ ISR(ADC_vect)
         {
             lcd_gotoxy(h, v);
             lcd_puts(" ");
-            if (h < 15){
-                h++;
+            if (h > 0){
+                h--;
             }
             lcd_gotoxy(h, v);
             itoa(ch, string, 10);
