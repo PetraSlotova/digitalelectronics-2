@@ -23,10 +23,6 @@ Applikácia of analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný 
 * Petra Slotová (zodpovedá za kód schému, flowchart)
 
 ## Popis hardwaru
-Digilent PmodCLP LCD modul
-* RW sa pripojí na GND
-* Rs a En na digitálne piny 8 a 9
-* vstupné piny displeja D4 až D7  pripojíme na digitálne piny 4 až 7
 
 Joystick
 * GND na GND
@@ -39,7 +35,26 @@ Rotačný enkóder
 * CLK a DT na digitálne piny 11 a 12
 * SW na digitálny pin 2
 
+Digilent PmodCLP LCD modul
+- pripojenie v simulátore SimulIDE
+* RW sa pripojí na GND
+* Rs a En na digitálne piny 8 a 9
+* vstupné piny displeja D4 až D7  pripojíme na digitálne piny 4 až 7
+
+- pripojenie v reále
+J1 - spodná polovica
+* piny 7 až 10 pripojíme na digitálne piny 4 až 7
+* GND na GND
+* VCC na +5V
+J2
+* RW sa pripojí na GND
+* Rs a En na digitálne piny 8 a 9
+
 ![Schematic](images/schematic1.png)
+Obr. 1 - Zapojenie v programe SimulIDE
+
+![Schematic](images/schematic2.png)
+Obr. 2 - Zapojenie v reále
 
 ## Software description
 
