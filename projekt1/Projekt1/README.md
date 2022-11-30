@@ -20,7 +20,7 @@ Applikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enk
 * Natália Pločeková (zodpovedná za kód, schému, video)
 * Petra Slotová (zodpovedá za kód schému, flowchart)
 
-## Popis hardwaru
+## Popis zapojenia hardwaru
 
 ### Joystick
 * GND na GND
