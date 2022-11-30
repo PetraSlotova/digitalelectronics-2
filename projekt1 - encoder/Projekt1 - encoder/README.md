@@ -29,12 +29,12 @@ The goal of the project is cooperation in pairs, further study of the topic, des
 
 ### Team members
 
-* Natália Pločeková (responsible for xxx)
-* Petra Slotová (responsible for xxx)
+* Natália Pločeková (zodpovedná za kód, schému, video)
+* Petra Slotová (zodpovedá za kód schému, flowchart)
 
 ## Hardware description
 
-Insert descriptive text and schematic(s) of your implementation.
+[!Schematics] (images/schematics.png)
 
 ## Software description
 

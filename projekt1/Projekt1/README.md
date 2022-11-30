@@ -29,8 +29,8 @@ The goal of the project is cooperation in pairs, further study of the topic, des
 
 ### Team members
 
-* Natália Pločeková (responsible for xxx)
-* Petra Slotová (responsible for xxx)
+* Natália Pločeková 
+* Petra Slotová 
 
 ## Hardware description
 
