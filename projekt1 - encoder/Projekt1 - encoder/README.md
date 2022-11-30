@@ -34,7 +34,7 @@ The goal of the project is cooperation in pairs, further study of the topic, des
 
 ## Hardware description
 
-[!Schematic] (images/schematic.png)
+![Schematic] (images/schematic.png)
 
 ## Software description
 
