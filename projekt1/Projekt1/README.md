@@ -15,7 +15,7 @@ Applikácia of analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný 
    └── README.md       // Report of this project
    ```
 
-### Členovia týmu
+## Členovia týmu
 
 * Natália Pločeková (zodpovedná za kód, schému, video)
 * Petra Slotová (zodpovedá za kód schému, flowchart)
