@@ -55,7 +55,7 @@ Obr. 1 - Zapojenie v programe SimulIDE
 ![Schematic](images/schematic2.png)
 Obr. 2 - Zapojenie v reále
 
-## Software description
+## Popis softvéru
 
 Put flowchats of your algorithm(s). Write descriptive text of your libraries and source files. Put direct links to these files in `src` or `lib` folders.
 
@@ -63,7 +63,7 @@ Put flowchats of your algorithm(s). Write descriptive text of your libraries and
 
 Insert a link to a short video with your practical implementation example (1-3 minutes, e.g. on YouTube).
 
-## References
+## Zdroje
 
 1. Write your text here.
 2. ...
