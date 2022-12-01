@@ -92,7 +92,7 @@ Obr. 6 - Vývojový diagram pre prerušenie ADC_vect
 
 ## Video
 
-Insert a link to a short video with your practical implementation example (1-3 minutes, e.g. on YouTube).
+https://youtu.be/ypa0Erb12_o
 
 ## Zdroje
 
