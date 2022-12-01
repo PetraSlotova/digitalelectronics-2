@@ -8,7 +8,7 @@ Applikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enk
    ├── include         				// Included files
    │	└── timer.h
    ├── lib             				// Libraries
-   │ 	└── gpio				        // Library for controlling GPIO pins
+   │ 	└── gpio				      // Library for controlling GPIO pins
    │		└── gpio.c
    │	 	└── gpio.h
    │	└── lcd				            // Library for communication with LCD display
