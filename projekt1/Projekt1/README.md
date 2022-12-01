@@ -2,15 +2,23 @@
 
 Applikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enkóder, a Digilent PmodCLP LCD modul.
 
-## Recommended GitHub repository structure
+## Štruktúra projektu
 
-   ```c
-   YOUR_PROJECT        // PlatfomIO project
+   PROJEKT1       // PlatfomIO project
    ├── include         // Included files
+   │	└── timer.h
    ├── lib             // Libraries
+   │ 	└── gpio
+   │		└── gpio.c
+   │	 	└── gpio.h
+   │	└── lcd
+   │		└── lcd.definitions.h
+   │		└── lcd.c
+   │		└── lcd.h
    ├── src             // Source file(s)
    │   └── main.c
    ├── test            // No need this
+   ├── .gitignore
    ├── platformio.ini  // Project Configuration File
    └── README.md       // Report of this project
    ```
