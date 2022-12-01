@@ -64,10 +64,10 @@ uint16_t ch = 1;
 
 int main(void)
 {
-    /* -------------------------Initialize display -----------------------------*/
+    /* -------------------------Initialize display-----------------------------*/
     lcd_init(LCD_DISP_ON_CURSOR);
     
-    /* -----------------------------Joystick -----------------------------------*/
+    /* -----------------------------Joystick-----------------------------------*/
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
     ADMUX = ADMUX |  (1<<REFS0);
@@ -78,17 +78,19 @@ int main(void)
     // Set clock prescaler to 128
     ADCSRA |= (1<<ADPS2) | (1<<ADPS1) | (1<<ADPS0);
 
+    /* -----------------------------Timer-----------------------------------*/
     // Configure 16-bit Timer/Counter1 to start ADC conversion
     // Set prescaler to 33 ms and enable overflow interrupt
     TIM1_overflow_33ms();
     TIM1_overflow_interrupt_enable();
     
-    PCICR |= (1<<PCIE0);
-    PCMSK0 |= (1<<PCINT3);
-    PCMSK0 |= (1<<PCINT4);
+    /* -----------------------------Rotary encoder-----------------------------------*/    
+    PCICR |= (1<<PCIE0);                    // any change of any enable PCINT[7:0] pinn will cause an interrupt
+    PCMSK0 |= (1<<PCINT3);                  // enable PCINT3 change interrupt
+    PCMSK0 |= (1<<PCINT4);                  // enable PCINT4 change interrupt
 
-    EIMSK |= (1 << INT0);
-    GPIO_mode_input_pullup(&DDRD, PD2);
+    EIMSK |= (1 << INT0);                   // External interrupt mask register - enable INT0 bit
+    GPIO_mode_input_pullup(&DDRD, PD2);     //Configurate digital pin 2 as pullup
 
     // Enables interrupts by setting the global interrupt mask
     sei();
