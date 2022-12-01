@@ -11,7 +11,7 @@ Applikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enk
    │ 	└── gpio				// Library for controlling GPIO pins
    │		└── gpio.c
    │	 	└── gpio.h
-   │	└── lcd				          // Library for communication with LCD display
+   │	└── lcd				         // Library for communication with LCD display
    │		└── lcd.definitions.h
    │		└── lcd.c
    │		└── lcd.h
