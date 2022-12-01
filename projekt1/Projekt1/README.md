@@ -4,7 +4,7 @@ Applikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enk
 
 ## Štruktúra projektu
    ```c
-   PROJEKT1       // PlatfomIO project
+   PROJEKT1            // PlatfomIO project
    ├── include         // Included files
    │	└── timer.h
    ├── lib             // Libraries
