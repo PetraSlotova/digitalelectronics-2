@@ -1,28 +1,24 @@
 /***********************************************************************
  * 
- * Stopwatch by Timer/Counter2 on the Liquid Crystal Display (LCD)
  *
  * ATmega328P (Arduino Uno), 16 MHz, PlatformIO
- *
- * Copyright (c) 2017 Tomas Fryza
- * Dept. of Radio Electronics, Brno University of Technology, Czechia
- * This work is licensed under the terms of the MIT license.
  * 
  * Components:
  *   16x2 character LCD with parallel interface
  *     VSS  - GND (Power supply ground)
  *     VDD  - +5V (Positive power supply)
- *     Vo   - (Contrast)
  *     RS   - PB0 (Register Select: High for Data transfer, Low for Instruction transfer)
  *     RW   - GND (Read/Write signal: High for Read mode, Low for Write mode)
  *     E    - PB1 (Read/Write Enable: High for Read, falling edge writes data to LCD)
- *     D3:0 - NC (Data bits 3..0, Not Connected)
+ *     D2   - PD2 (Data bit 2)
  *     D4   - PD4 (Data bit 4)
  *     D5   - PD5 (Data bit 5)
  *     D6   - PD6 (Data bit 6)
  *     D7   - PD7 (Data bit 7)
- *     A+K  - Back-light enabled/disabled by PB2
- * 
+ *     B11  - PB3 (Data bit 11)
+ *     B12  - PB4 (Data bit 12)
+ *     A0   - PC0 (Analog bit 0) 
+*      A1   - PC1 (Analog bit 1)
  **********************************************************************/
 
 /* Define pins for joystick ------------------------------------------*/
@@ -111,8 +107,8 @@ int main(void)
 
 /* Interrupt service routines ----------------------------------------*/
 /**********************************************************************
- * Function: Timer/Counter1 overflow interrupt
- * Purpose:  Use single conversion mode and start conversion every 100 ms.
+ * Function: Timer/1 overflow interrupt
+ * Purpose:  Use single conversion mode and start conversion every 33 ms.
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
@@ -123,7 +119,7 @@ ISR(TIMER1_OVF_vect)
 ISR(PCINT0_vect)
 {
     char string[4];  // String for converted numbers by itoa()
-    _delay_ms(SHORT_DELAY);
+    _delay_ms(SHORT_DELAY); // Wait 5 ms
     if (ch < 9)
     {
         ch++;
@@ -138,10 +134,10 @@ ISR(PCINT0_vect)
 ISR(INT0_vect)
 {
     char string[4];  // String for converted numbers by itoa()
-    uint8_t sw = digitalRead(2);
+    uint8_t sw = digitalRead(2); // Read value from digital pin 2
     if (sw == LOW)
     {
-        ch = 1;
+        ch = 1;     // Reset ch value
         lcd_gotoxy(h, v);
         itoa(ch, string, 10);
         lcd_puts(string);
@@ -155,21 +151,19 @@ ISR(INT0_vect)
  **********************************************************************/
 ISR(ADC_vect)
 {
-    uint16_t x, y;
+    uint16_t x, y;   // Set variables x, y as 16-bit integer
     char string[4];  // String for converted numbers by itoa()
 
     // Read x value ----------------------------------------------------------
     // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
     // Select input channel ADC1 (voltage divider pin)
-    uint8_t channel = ADMUX & 0b00001111;
+    uint8_t channel = ADMUX & 0b00001111; // Get last 4 bits from ADMUX
     if (channel == 0)
     {
-    x = ADC;
+    x = ADC;    // Get ADC value
 
     if ((x<411)|(x>611))
     {
-        // Convert "value" to "string" and display it
-
         if(x<411)
         {
             lcd_gotoxy(h, v);
@@ -193,14 +187,14 @@ ISR(ADC_vect)
             lcd_puts(string);
         }
     }
-    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0) ;
+    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0) ;    // Change ADMUX to 1
     }
 
     else if (channel == 1)
     {
         // Read y value ----------------------------------------------------------
         // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
-        y = ADC;
+        y = ADC;    // Get ADC value
 
         if(y<411)
         {
@@ -224,6 +218,6 @@ ISR(ADC_vect)
             itoa(ch, string, 10);
             lcd_puts(string);
         }
-        ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1 | 1<<MUX0);
+        ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1 | 1<<MUX0);   // Change ADMUX to 0
         }
 }
