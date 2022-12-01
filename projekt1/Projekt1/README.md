@@ -58,15 +58,19 @@ Obr. 2 - Zapojenie v reále
 ## Popis softvéru
 
 ![TIMER1_ovf_vect](images/TIMER1_ovf_vect.png)
+
 Obr. 3 - Vývojový diagram pre prerušenie TIMER1_ovf_vect
 
 ![PCINT0_vect](images/PCINT0_vect.png)
+
 Obr. 4 - Vývojový diagram pre prerušenie PCINT0_vect
 
 ![INT0_vect](images/INT0_vect.png)
+
 Obr. 5 - Vývojový diagram pre prerušenie INT0_vect
 
 ![ADC_vect](images/ADC_vect.png)
+
 Obr. 6 - Vývojový diagram pre prerušenie ADC_vect
 
 ## Video
