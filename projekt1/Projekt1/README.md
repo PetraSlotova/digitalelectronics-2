@@ -3,7 +3,7 @@
 Applikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enkóder, a Digilent PmodCLP LCD modul.
 
 ## Štruktúra projektu
-
+   `c
    PROJEKT1       // PlatfomIO project
    ├── include         // Included files
    │	└── timer.h
