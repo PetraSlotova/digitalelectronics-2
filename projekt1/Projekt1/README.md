@@ -18,7 +18,7 @@ Applikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enk
 ## Členovia týmu
 
 * Natália Pločeková (zodpovedná za kód, schému, video)
-* Petra Slotová (zodpovedá za kód schému, flowchart)
+* Petra Slotová (zodpovedá za kód schému, vývojové diagramy)
 
 ## Popis zapojenia hardvéru
 
@@ -57,7 +57,17 @@ Obr. 2 - Zapojenie v reále
 
 ## Popis softvéru
 
-Put flowchats of your algorithm(s). Write descriptive text of your libraries and source files. Put direct links to these files in `src` or `lib` folders.
+![TIMER1_ovf_vect](images/TIMER1_ovf_vect.png)
+Obr. 3 - Vývojový diagram pre prerušenie TIMER1_ovf_vect
+
+![PCINT0_vect](images/PCINT0_vect.png)
+Obr. 4 - Vývojový diagram pre prerušenie PCINT0_vect
+
+![INT0_vect](images/INT0_vect.png)
+Obr. 5 - Vývojový diagram pre prerušenie INT0_vect
+
+![ADC_vect](images/ADC_vect.png)
+Obr. 6 - Vývojový diagram pre prerušenie ADC_vect
 
 ## Video
 
