@@ -57,17 +57,28 @@ Obr. 2 - Zapojenie v reále
 
 ## Popis softvéru
 
+Pomocou prerušenia TIMER1_ovf_vect spúšťame zakaždým ADC konverziu.
+
 ![TIMER1_ovf_vect](images/TIMER1_ovf_vect.png)
 
 Obr. 3 - Vývojový diagram pre prerušenie TIMER1_ovf_vect
+
+V prerušení PCINT0_vect si ako prvé vložime opozdenie o 5 ms, aby sme sa vyhli zákmitom pri otáčaní enkóderom. 
+Následne ak je splnená nami definovaná podmienka, keď ch<9 pri každóm potočení enkóderom zvyšujeme jej hodnotu a vypisujeme ju na display.
 
 ![PCINT0_vect](images/PCINT0_vect.png)
 
 Obr. 4 - Vývojový diagram pre prerušenie PCINT0_vect
 
+Prerušenie INT0_vect využívame k stlačeniu tlačítka na enkóderi, kde hodnotu ch nastavíme na pôvodnú hodnotu a zobrazíme ju na displeji.
+
 ![INT0_vect](images/INT0_vect.png)
 
 Obr. 5 - Vývojový diagram pre prerušenie INT0_vect
+
+V poslednom prerušení sa venujeme joystiku, kde si do premennej chanel načítame posledné 4 bity z ADMUXU, a keďže využívame len analogové piny A0 a A1 
+môžeme dostať výsledné hodnoty 0 alebo 1. Tým pádom rozlíšime, či sa chceme pohybovať po displeji vpravo/vľavo alebo hore/dole. Pokiaľ sa náš znak dostane na 
+koniec dispeja, zostane vďaka ďalším podmienkam na okraji a mimo displej sa už neposunie.
 
 ![ADC_vect](images/ADC_vect.png)
 
