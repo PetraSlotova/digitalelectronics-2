@@ -4,10 +4,10 @@ Applikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enk
 
 ## Štruktúra projektu
    ```c
-   PROJEKT1            			// PlatfomIO project
-   ├── include         			// Included files
+   PROJEKT1            				// PlatfomIO project
+   ├── include         				// Included files
    │	└── timer.h
-   ├── lib             			// Libraries
+   ├── lib             				// Libraries
    │ 	└── gpio				      // Library for controlling GPIO pins
    │		└── gpio.c
    │	 	└── gpio.h
@@ -15,12 +15,12 @@ Applikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enk
    │		└── lcd.definitions.h
    │		└── lcd.c
    │		└── lcd.h
-   ├── src             			// Source file(s)
+   ├── src             				// Source file(s)
    │   └── main.c
-   ├── test            			// No need this
+   ├── test            				// No need this
    ├── .gitignore
-   ├── platformio.ini  			// Project Configuration File
-   └── README.md       			// Report of this project
+   ├── platformio.ini  				// Project Configuration File
+   └── README.md       				// Report of this project
    ```
 
 ## Členovia týmu
