@@ -90,5 +90,5 @@ Insert a link to a short video with your practical implementation example (1-3 m
 
 ## Zdroje
 
-1. Write your text here.
-2. ...
+1. https://lastminuteengineers.com/rotary-encoder-arduino-tutorial/
+2. https://www.c-sharpcorner.com/article/how-to-connect-arduino-joystick-in-arduino-uno/
