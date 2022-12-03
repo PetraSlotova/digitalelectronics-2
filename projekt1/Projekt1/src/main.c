@@ -129,14 +129,12 @@ ISR(PCINT0_vect)
         itoa(ch, string, 10);
         lcd_puts(string);
     }
-    //int clk = GPIO_read(&PINB, 3);
-    //int direction = GPIO_read(&PINB, 4);
 }  
 
 ISR(INT0_vect)
 {
-    char string[4];  // String for converted numbers by itoa()
-    uint8_t sw = digitalRead(2); // Read value from digital pin 2
+    char string[4];                         // String for converted numbers by itoa()
+    uint8_t sw = GPIO_read(&PIND, SW);      // Read value from digital pin 2
     if (sw == LOW)
     {
         ch = 1;     // Reset ch value
