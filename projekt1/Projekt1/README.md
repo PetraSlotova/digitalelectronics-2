@@ -1,6 +1,6 @@
 # Projekt 1
 
-Applikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enkóder, a Digilent PmodCLP LCD modul.
+Aplikácia analogového joy-sticku (2 ADC kanály, 1 tlačítko), rotačný enkóder, a Digilent PmodCLP LCD modul.
 
 ## Štruktúra projektu
    ```c
